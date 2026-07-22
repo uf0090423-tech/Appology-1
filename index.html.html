@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>for Ashu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF8F2;
+    --blush:#FFD9E4;
+    --blush-dark:#FFB8CE;
+    --lavender:#D6C6FF;
+    --gold:#E8B968;
+    --gold-light:#F6DFA8;
+    --plum:#42283F;
+    --plum-soft:#8A6C87;
+    --mint:#B7E8CC;
+    --glass:rgba(255,255,255,0.55);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 10%, rgba(255,217,228,0.9) 0, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 90% 8%, rgba(214,198,255,0.75) 0, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 90% 95%, rgba(246,223,168,0.55) 0, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 5% 92%, rgba(183,232,204,0.6) 0, transparent 55%),
+      var(--cream);
+    font-family:'Quicksand', sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,.display{font-family:'Baloo 2', cursive;}
+
+  .ambient{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:1;
+  }
+  .drift{
+    position:absolute;
+    bottom:-10%;
+    opacity:0;
+    animation:floatUp linear infinite;
+    color:var(--blush-dark);
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:0.55; }
+    90%{ opacity:0.45; }
+    100%{ transform:translateY(-115vh) translateX(var(--drift-x,20px)) rotate(25deg); opacity:0; }
+  }
+
+  .stage{
+    width:100%;
+    max-width:480px;
+    padding:24px;
+    text-align:center;
+    position:relative;
+    z-index:2;
+  }
+
+  .eyebrow{
+    font-family:'Baloo 2', cursive;
+    font-weight:700;
+    color:var(--plum-soft);
+    letter-spacing:1px;
+    font-size:0.85rem;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+
+  /* Envelope */
+  .envelope-wrap{
+    perspective:1000px;
+    margin:20px auto 0;
+    width:280px;
+    cursor:pointer;
+    border-radius:10px;
+    animation:pulseGlow 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{
+    0%,100%{ box-shadow:0 0 0 0 rgba(232,185,104,0); }
+    50%{ box-shadow:0 0 0 16px rgba(232,185,104,0.14); }
+  }
+  .envelope-wrap.opened{ animation:none; }
+  .envelope{
+    position:relative;
+    width:280px;
+    height:180px;
+    background:var(--blush);
+    border-radius:10px;
+    box-shadow:0 14px 30px rgba(74,46,74,0.18);
+    transition:transform .25s ease;
+  }
+  .envelope-wrap:hover .envelope{transform:translateY(-4px) scale(1.015);}
+  .envelope:before, .envelope:after{
+    content:"";
+    position:absolute;
+    top:0; width:0; height:0;
+    border-top:90px solid var(--blush-dark);
+  }
+  .envelope:before{
+    left:0;
+    border-right:140px solid transparent;
+  }
+  .envelope:after{
+    right:0;
+    border-left:140px solid transparent;
+  }
+  .flap{
+    position:absolute;
+    top:0; left:0; width:280px; height:0;
+    border-left:140px solid transparent;
+    border-right:140px solid transparent;
+    border-top:105px solid #FFC1D6;
+    transform-origin:top;
+    transition:transform .6s cubic-bezier(.6,-0.2,.35,1.3);
+    z-index:3;
+  }
+  .envelope.open .flap{transform:rotateX(180deg);}
+  .seal{
+    position:absolute;
+    top:62px; left:50%;
+    transform:translateX(-50%);
+    width:50px;height:50px;
+    background:radial-gradient(circle at 32% 28%, var(--gold-light), var(--gold) 60%, #C99A45 100%);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    font-size:1.3rem;
+    z-index:4;
+    box-shadow:0 4px 10px rgba(180,130,50,0.4), inset 0 1px 2px rgba(255,255,255,0.6);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .envelope.open .seal{opacity:0; transform:translateX(-50%) scale(0.4);}
+
+  .hint{
+    margin-top:14px;
+    color:var(--plum-soft);
+    font-weight:600;
+    font-size:0.95rem;
+  }
+
+  /* Letter */
+  .letter{
+    max-width:420px;
+    margin:26px auto 0;
+    background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.65));
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-radius:20px;
+    border:1px solid rgba(232,185,104,0.35);
+    padding:34px 30px 30px;
+    box-shadow:0 24px 50px rgba(74,46,74,0.18), 0 2px 0 rgba(255,255,255,0.7) inset;
+    opacity:0;
+    transform:translateY(24px) scale(0.97);
+    transition:opacity .6s cubic-bezier(.2,.7,.3,1), transform .6s cubic-bezier(.2,.7,.3,1);
+    text-align:left;
+    position:relative;
+  }
+  .letter.show{opacity:1; transform:translateY(0) scale(1);}
+  .letter:before{
+    content:"";
+    position:absolute;
+    top:14px; left:50%;
+    transform:translateX(-50%);
+    width:36px; height:3px;
+    border-radius:3px;
+    background:linear-gradient(90deg, var(--gold), var(--blush-dark));
+  }
+
+  .letter h2{
+    color:var(--plum);
+    margin:14px 0 14px;
+    font-size:1.7rem;
+    letter-spacing:0.3px;
+  }
+  .letter p{
+    color:#5b435b;
+    line-height:1.65;
+    font-size:1.02rem;
+    margin:0 0 14px;
+  }
+  .letter .word{
+    display:inline-block;
+    opacity:0;
+    filter:blur(2px);
+    animation:reveal .5s forwards;
+  }
+  @keyframes reveal{ to{opacity:1; filter:blur(0);} }
+
+  .signoff{
+    font-family:'Baloo 2', cursive;
+    color:var(--plum);
+    font-size:1.1rem;
+    margin-top:6px;
+  }
+
+  /* Buttons */
+  .btn-row{
+    margin-top:24px;
+    display:flex;
+    justify-content:center;
+  }
+  button{
+    font-family:'Baloo 2', cursive;
+    font-weight:700;
+    font-size:1rem;
+    border:none;
+    border-radius:999px;
+    padding:14px 26px;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, left .25s ease, top .25s ease;
+  }
+  button:focus-visible{outline:3px solid var(--plum); outline-offset:2px;}
+  .yes{
+    background:linear-gradient(135deg, var(--gold-light), var(--gold));
+    color:#4a3414;
+    box-shadow:0 10px 22px rgba(232,185,104,0.45);
+  }
+  .yes:hover{transform:translateY(-2px); box-shadow:0 14px 26px rgba(232,185,104,0.55);}
+  .no{
+    background:rgba(255,255,255,0.5);
+    color:var(--plum-soft);
+    border:1.5px solid rgba(138,108,135,0.35);
+    position:relative;
+    backdrop-filter:blur(6px);
+  }
+
+  .finale{
+    margin-top:26px;
+    padding:26px 24px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6));
+    backdrop-filter:blur(14px);
+    border-radius:20px;
+    border:1px solid rgba(232,185,104,0.35);
+    box-shadow:0 24px 50px rgba(74,46,74,0.16);
+    opacity:0;
+    transform:scale(0.9);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .finale.show{opacity:1; transform:scale(1);}
+  .finale h2{
+    font-size:2rem; margin:0 0 8px;
+    background:linear-gradient(135deg, var(--gold), #C99A45);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .finale p{color:var(--plum-soft); font-weight:600;}
+
+  .confetti{
+    position:fixed;
+    top:-20px;
+    z-index:5;
+    pointer-events:none;
+    border-radius:2px;
+  }
+
+  /* Suspense text */
+  .suspense-text{
+    margin-top:18px;
+    min-height:24px;
+    color:var(--plum-soft);
+    font-weight:700;
+    font-family:'Baloo 2', cursive;
+    font-size:1.02rem;
+    opacity:0;
+    letter-spacing:0.3px;
+    transition:opacity .5s ease;
+  }
+  .suspense-text.show{opacity:1;}
+  .suspense-text .dots span{
+    display:inline-block;
+    animation:dotPulse 1.2s infinite;
+  }
+  .suspense-text .dots span:nth-child(2){animation-delay:.2s;}
+  .suspense-text .dots span:nth-child(3){animation-delay:.4s;}
+  @keyframes dotPulse{
+    0%,60%,100%{opacity:0.25; transform:translateY(0);}
+    30%{opacity:1; transform:translateY(-3px);}
+  }
+
+  /* Blooming flower */
+  .flower-wrap{
+    margin-top:6px;
+    height:130px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .flower-wrap.show{opacity:1; transform:translateY(0);}
+  .stem-line{
+    fill:none;
+    stroke:#8FBF8A;
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-dasharray:50;
+    stroke-dashoffset:50;
+  }
+  .flower-wrap.playing .stem-line{
+    animation:drawStem .7s ease forwards;
+  }
+  @keyframes drawStem{ to{ stroke-dashoffset:0; } }
+  .leaf{
+    fill:#A8D6A0;
+    opacity:0;
+    transform-box:fill-box;
+    transform-origin:center;
+  }
+  .flower-wrap.playing .leaf-left{ animation:leafPop .5s ease forwards; animation-delay:.5s; }
+  .flower-wrap.playing .leaf-right{ animation:leafPop .5s ease forwards; animation-delay:.65s; }
+  @keyframes leafPop{ from{opacity:0; transform:scale(0);} to{opacity:1; transform:scale(1);} }
+  .petal-inner{
+    transform-origin:0px 0px;
+    opacity:0;
+  }
+  .flower-wrap.playing .petal-inner{
+    animation:bloom .65s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes bloom{ from{transform:scale(0); opacity:0;} to{transform:scale(1); opacity:1;} }
+  .petal-inner ellipse{ fill:url(#petalGrad); }
+  .flower-core{ fill:var(--gold); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="petalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFC9DB"/>
+      <stop offset="100%" stop-color="#FFB0CB"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="ambient" id="ambient"></div>
+
+<div class="stage">
+  <div class="eyebrow">a small apology, delivered properly</div>
+
+  <div id="envelopeWrap" class="envelope-wrap">
+    <div id="envelope" class="envelope">
+      <div class="seal">A</div>
+      <div class="flap"></div>
+    </div>
+  </div>
+  <div class="hint" id="hint">tap the envelope, Ashu 💌</div>
+
+  <div class="suspense-text" id="suspenseText"></div>
+
+  <div class="flower-wrap" id="flowerWrap">
+    <svg viewBox="0 0 120 130" width="100" height="108">
+      <g class="stem-group">
+        <line x1="60" y1="128" x2="60" y2="72" class="stem-line"/>
+        <path d="M60,100 C48,95 42,84 53,80" class="leaf leaf-left"/>
+        <path d="M60,108 C72,102 78,90 67,87" class="leaf leaf-right"/>
+      </g>
+      <g class="flower-center" transform="translate(60,64)">
+        <g transform="rotate(0)"><g class="petal-inner" style="animation-delay:.9s"><ellipse cx="0" cy="-18" rx="9" ry="16"/></g></g>
+        <g transform="rotate(60)"><g class="petal-inner" style="animation-delay:.98s"><ellipse cx="0" cy="-18" rx="9" ry="16"/></g></g>
+        <g transform="rotate(120)"><g class="petal-inner" style="animation-delay:1.06s"><ellipse cx="0" cy="-18" rx="9" ry="16"/></g></g>
+        <g transform="rotate(180)"><g class="petal-inner" style="animation-delay:1.14s"><ellipse cx="0" cy="-18" rx="9" ry="16"/></g></g>
+        <g transform="rotate(240)"><g class="petal-inner" style="animation-delay:1.22s"><ellipse cx="0" cy="-18" rx="9" ry="16"/></g></g>
+        <g transform="rotate(300)"><g class="petal-inner" style="animation-delay:1.3s"><ellipse cx="0" cy="-18" rx="9" ry="16"/></g></g>
+        <circle r="9" class="flower-core"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="letter" id="letter">
+    <h2>Hey Ashu,</h2>
+    <p id="p1"></p>
+    <p id="p2"></p>
+    <p id="p3"></p>
+    <div class="signoff">— me, feeling genuinely bad 🐻</div>
+
+    <div class="btn-row" id="btnRow">
+      <button class="yes" id="yesBtn">Forgive me? 🥺</button>
+    </div>
+  </div>
+
+  <div class="finale" id="finale">
+    <h2>yay 🎉</h2>
+    <p>best friends again. thank you for giving me another chance.</p>
+  </div>
+</div>
+
+<script>
+// ambient floating hearts
+const ambient = document.getElementById('ambient');
+const heartGlyphs = ['♥','✦','🌸'];
+for(let i=0;i<14;i++){
+  const d = document.createElement('div');
+  d.className = 'drift';
+  const r = Math.random();
+  d.textContent = r < 0.6 ? '♥' : (r < 0.85 ? '✦' : '🌸');
+  d.style.left = Math.random()*100 + 'vw';
+  d.style.fontSize = (12 + Math.random()*16) + 'px';
+  d.style.setProperty('--drift-x', (Math.random()*60-30) + 'px');
+  d.style.animationDuration = (14 + Math.random()*10) + 's';
+  d.style.animationDelay = (Math.random()*14) + 's';
+  ambient.appendChild(d);
+}
+
+const envelope = document.getElementById('envelope');
+const envelopeWrap = document.getElementById('envelopeWrap');
+const hint = document.getElementById('hint');
+const suspenseText = document.getElementById('suspenseText');
+const flowerWrap = document.getElementById('flowerWrap');
+const letter = document.getElementById('letter');
+const btnRow = document.getElementById('btnRow');
+const yesBtn = document.getElementById('yesBtn');
+const finale = document.getElementById('finale');
+
+const paragraphs = [
+  "I know things have felt off between us, and I hate that I'm the reason you've been sad. That's the last thing I ever want to be.",
+  "You've been one of my favorite people for a long time, and I don't want a mistake I made to sit between us any longer than it already has.",
+  "So instead of a normal text, I built you this. Because you deserve more effort than a two-line \"sorry\", and because I really, truly am."
+];
+
+function revealText(el, text, startDelay){
+  const words = text.split(' ');
+  el.innerHTML = words.map((w,i)=>`<span class="word" style="animation-delay:${startDelay + i*0.05}s">${w}</span>`).join(' ');
+}
+
+function setSuspense(text){
+  suspenseText.innerHTML = text + ' <span class="dots"><span>.</span><span>.</span><span>.</span></span>';
+  suspenseText.classList.add('show');
+}
+
+let opened = false;
+function openEnvelope(){
+  if(opened) return;
+  opened = true;
+  envelope.classList.add('open');
+  envelopeWrap.classList.add('opened');
+  hint.style.opacity = '0';
+
+  setTimeout(()=> setSuspense('opening something for you'), 450);
+
+  setTimeout(()=>{
+    suspenseText.classList.remove('show');
+    flowerWrap.classList.add('show');
+  }, 2000);
+
+  setTimeout(()=>{
+    flowerWrap.classList.add('playing');
+  }, 2350);
+
+  setTimeout(()=> setSuspense('almost there'), 4300);
+
+  setTimeout(()=>{
+    suspenseText.classList.remove('show');
+    flowerWrap.classList.remove('show');
+  }, 5300);
+
+  setTimeout(()=>{
+    revealText(document.getElementById('p1'), paragraphs[0], 0);
+    revealText(document.getElementById('p2'), paragraphs[1], 1.2);
+    revealText(document.getElementById('p3'), paragraphs[2], 2.6);
+    letter.classList.add('show');
+  }, 5800);
+}
+envelopeWrap.addEventListener('click', openEnvelope);
+envelopeWrap.addEventListener('keydown', e=>{ if(e.key==='Enter') openEnvelope(); });
+envelopeWrap.setAttribute('tabindex','0');
+envelopeWrap.setAttribute('role','button');
+envelopeWrap.setAttribute('aria-label','Open the envelope');
+
+function burstConfetti(){
+  const colors = ['#FFB5CC','#CBB8FF','#FFDD66','#A8E6C1','#FFF6EF'];
+  for(let i=0;i<60;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    const size = 6 + Math.random()*6;
+    c.style.width = size+'px';
+    c.style.height = (size*0.6)+'px';
+    c.style.left = Math.random()*window.innerWidth+'px';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    const duration = 2200 + Math.random()*1400;
+    const drift = (Math.random()-0.5)*200;
+    c.animate([
+      { transform:c.style.transform + ' translate(0,0)', opacity:1 },
+      { transform:`rotate(${Math.random()*720}deg) translate(${drift}px, ${window.innerHeight+40}px)`, opacity:0.9 }
+    ], { duration, easing:'cubic-bezier(.2,.6,.3,1)' });
+    setTimeout(()=>c.remove(), duration);
+  }
+}
+
+yesBtn.addEventListener('click', ()=>{
+  btnRow.style.display='none';
+  finale.classList.add('show');
+  burstConfetti();
+});
+</script>
+
+</body>
+</html>
